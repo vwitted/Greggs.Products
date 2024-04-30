@@ -1,6 +1,6 @@
 ﻿using Greggs.Products.Api.Models;
 
-namespace Greggs.Products.Api.Services
+namespace Greggs.Products.Api.Services.CurrencyConverter
 {
     public interface ICurrencyConverter
     {

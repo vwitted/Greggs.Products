@@ -1,4 +1,7 @@
-using Greggs.Products.Api.Services;
+using Greggs.Products.Api.DataAccess;
+using Greggs.Products.Api.Models;
+using Greggs.Products.Api.Services.CurrencyConverter;
+using Greggs.Products.Api.Services.ProductService;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,8 +15,9 @@ public class Startup
     {
         services.AddControllers();
 
-        services.AddScoped<ICurrencyConverter, CurrencyConverter>();    
-
+        services.AddScoped<ICurrencyConverter, CurrencyConverter>();
+        services.AddScoped<IProductService, ProductService>()
+           .AddScoped<IDataAccess<Product>, ProductAccess>();
         services.AddSwaggerGen();
 
     }

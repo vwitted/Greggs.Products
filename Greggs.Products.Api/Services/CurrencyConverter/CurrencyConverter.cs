@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Greggs.Products.Api.Models;
 
-namespace Greggs.Products.Api.Services
+namespace Greggs.Products.Api.Services.CurrencyConverter
 {
     public class CurrencyConverter : ICurrencyConverter
     {
@@ -16,7 +16,7 @@ namespace Greggs.Products.Api.Services
         {
             return ConvertCurrency(amount, GetCurrenciesFromString(sourceCurrencyCode), GetCurrenciesFromString(targetCurrencyCode));
         }
- 
+
         public decimal ConvertCurrency(decimal amount, Currencies sourceCurrency, Currencies targetCurrency)
         {
             decimal exchangeRate;
@@ -33,10 +33,10 @@ namespace Greggs.Products.Api.Services
 
         public Currencies GetCurrenciesFromString(string currency)
         {
-             Enum.TryParse(currency, out Currencies currenciesVal);
+            Enum.TryParse(currency, out Currencies currenciesVal);
 
-             return currenciesVal;
-                
+            return currenciesVal;
+
         }
     }
 

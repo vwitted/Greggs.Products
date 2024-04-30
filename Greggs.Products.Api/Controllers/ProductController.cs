@@ -5,7 +5,8 @@ using Greggs.Products.Api.Models;
 using Greggs.Products.Api.DataAccess;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Greggs.Products.Api.Services;
+using Greggs.Products.Api.Services.CurrencyConverter;
+using Greggs.Products.Api.Services.ProductService;
 
 namespace Greggs.Products.Api.Controllers;
 
@@ -16,31 +17,33 @@ public class ProductController : ControllerBase
 
     private readonly ILogger<ProductController> _logger;
     private readonly ICurrencyConverter _currencyConverter;
+    private readonly IProductService _productService;
+    
 
-    public ProductController(ILogger<ProductController> logger,ICurrencyConverter currencyConverter)
+    public ProductController(ILogger<ProductController> logger,ICurrencyConverter currencyConverter,IProductService productService)
     {
         _logger = logger;
         _currencyConverter = currencyConverter;
+        _productService = productService;
     }
 
     [HttpGet]
     public IEnumerable<Product> Get(int pageStart = 0, int pageSize = 5, string currency = "GBP")
     {
-        var list = new ProductAccess().List(pageStart, pageSize).ToArray();
+        var list = _productService.ProductList(pageStart, pageSize).ToArray();
 
         if (currency == "GBP")
         {
-            setCurrencyFieldGBP(list);
+           return setCurrencyFieldGBP(list);
         }
         else if (currency == "EUR")
         {
-            DoGBPtoEURConversion(list);
+            return DoGBPtoEURConversion(list);
         }
         else
         {
             return null;
         }
-        return list;
     }
 
     private Product[] setCurrencyFieldGBP(Product[] list)
