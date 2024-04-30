@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using Greggs.Products.Api.Models;
+using Greggs.Products.Api.DataAccess;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Greggs.Products.Api.Services;
 
 namespace Greggs.Products.Api.Controllers;
 
@@ -11,30 +13,36 @@ namespace Greggs.Products.Api.Controllers;
 [Route("[controller]")]
 public class ProductController : ControllerBase
 {
-    private static readonly string[] Products = new[]
-    {
-        "Sausage Roll", "Vegan Sausage Roll", "Steak Bake", "Yum Yum", "Pink Jammie"
-    };
 
     private readonly ILogger<ProductController> _logger;
+    private readonly ICurrencyConverter _currencyConverter;
 
-    public ProductController(ILogger<ProductController> logger)
+    public ProductController(ILogger<ProductController> logger,ICurrencyConverter currencyConverter)
     {
         _logger = logger;
+        _currencyConverter = currencyConverter;
     }
 
     [HttpGet]
-    public IEnumerable<Product> Get(int pageStart = 0, int pageSize = 5)
+    public IEnumerable<Product> Get(int pageStart = 0, int pageSize = 5, string currency = "GBP")
     {
-        if (pageSize > Products.Length)
-            pageSize = Products.Length;
+        var list = new ProductAccess().List(pageStart, pageSize).ToArray();
 
-        var rng = new Random();
-        return Enumerable.Range(1, pageSize).Select(index => new Product
+        if (currency == "GBP")
+        {
+            return list;
+        }
+        else if (currency == "EUR")
+        {
+            foreach (var item in list)
             {
-                PriceInPounds = rng.Next(0, 10),
-                Name = Products[rng.Next(Products.Length)]
-            })
-            .ToArray();
+                item.Price = _currencyConverter.ConvertCurrency(item.Price, Currencies.GBP, Currencies.EUR);
+            }
+        }
+        else
+        {
+            return null;
+        }
+        return list;
     }
 }

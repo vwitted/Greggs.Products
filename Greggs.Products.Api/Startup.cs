@@ -1,3 +1,4 @@
+using Greggs.Products.Api.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
@@ -11,7 +12,10 @@ public class Startup
     {
         services.AddControllers();
 
+        services.AddScoped<ICurrencyConverter, CurrencyConverter>();    
+
         services.AddSwaggerGen();
+
     }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
