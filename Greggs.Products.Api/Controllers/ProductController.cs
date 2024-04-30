@@ -30,18 +30,34 @@ public class ProductController : ControllerBase
 
         if (currency == "GBP")
         {
-            return list;
+            setCurrencyFieldGBP(list);
         }
         else if (currency == "EUR")
         {
-            foreach (var item in list)
-            {
-                item.Price = _currencyConverter.ConvertCurrency(item.Price, Currencies.GBP, Currencies.EUR);
-            }
+            DoGBPtoEURConversion(list);
         }
         else
         {
             return null;
+        }
+        return list;
+    }
+
+    private Product[] setCurrencyFieldGBP(Product[] list)
+    {
+        foreach (var item in list)
+        {
+            item.Currency = "GBP";
+        }
+        return list;
+    }
+
+    private Product[] DoGBPtoEURConversion(Product[] list)
+    {
+        foreach (var item in list)
+        {
+            item.Price = _currencyConverter.ConvertCurrency(item.Price, Currencies.GBP, Currencies.EUR);
+            item.Currency = "EUR";
         }
         return list;
     }
