@@ -4,8 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Xunit;
-using Greggs.Products.Api.Services;
 using Greggs.Products.Api.Models;
+using Greggs.Products.Api.Services.CurrencyConverter;
 
 
 namespace Greggs.Products.UnitTests
